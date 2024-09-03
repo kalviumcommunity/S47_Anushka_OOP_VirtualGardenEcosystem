@@ -11,15 +11,15 @@ public:
     // Constructor
     Plant(string n, int h) : name(n), height(h) {}
 
-    // Member function to display plant details
+    // Member function to display plant details using this pointer
     void display() {
-        cout << "Plant Name: " << name << ", Height: " << height << " cm" << endl;
+        cout << "Plant Name: " << this->name << ", Height: " << this->height << " cm" << endl;
     }
 
-    // Member function to grow the plant
+    // Member function to grow the plant using this pointer
     void grow(int growth) {
-        height += growth;
-        cout << name << " has grown by " << growth << " cm." << endl;
+        this->height += growth;
+        cout << this->name << " has grown by " << growth << " cm." << endl;
     }
 };
 
@@ -33,15 +33,15 @@ public:
     // Constructor
     Insect(string s, int a) : species(s), age(a) {}
 
-    // Member function to display insect details
+    // Member function to display insect details using this pointer
     void display() {
-        cout << "Insect Species: " << species << ", Age: " << age << " days" << endl;
+        cout << "Insect Species: " << this->species << ", Age: " << this->age << " days" << endl;
     }
 
-    // Member function to age the insect
+    // Member function to age the insect using this pointer
     void ageInsect(int days) {
-        age += days;
-        cout << species << " has aged by " << days << " days." << endl;
+        this->age += days;
+        cout << this->species << " has aged by " << days << " days." << endl;
     }
 };
 
