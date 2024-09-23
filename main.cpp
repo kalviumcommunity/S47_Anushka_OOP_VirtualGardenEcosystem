@@ -5,7 +5,7 @@ using namespace std;
 class Plant {
 private:
     string name;
-    int height; // in cm
+    int height;
 
 public:
     // Constructor
@@ -27,7 +27,7 @@ public:
 class Insect {
 private:
     string species;
-    int age; // in days
+    int age; 
 
 public:
     // Constructor
@@ -46,25 +46,29 @@ public:
 };
 
 int main() {
-    // Array of Plant objects
-    Plant garden[2] = {
-        Plant("Rose", 30),
-        Plant("Tulip", 15)
-    };
+    // Dynamically allocating memory for Plant objects
+    Plant* garden[2];
+    garden[0] = new Plant("Rose", 30);
+    garden[1] = new Plant("Tulip", 15);
 
-    // Array of Insect objects
-    Insect insects[2] = {
-        Insect("Bee", 10),
-        Insect("Butterfly", 5)
-    };
+    // Dynamically allocating memory for Insect objects
+    Insect* insects[2];
+    insects[0] = new Insect("Bee", 10);
+    insects[1] = new Insect("Butterfly", 5);
 
     // Using member functions
     for (int i = 0; i < 2; i++) {
-        garden[i].display();
-        garden[i].grow(10);
+        garden[i]->display();
+        garden[i]->grow(10);
 
-        insects[i].display();
-        insects[i].ageInsect(3);
+        insects[i]->display();
+        insects[i]->ageInsect(3);
+    }
+
+    // Deleting dynamically allocated memory
+    for (int i = 0; i < 2; i++) {
+        delete garden[i]; 
+        delete insects[i]; 
     }
 
     return 0;
