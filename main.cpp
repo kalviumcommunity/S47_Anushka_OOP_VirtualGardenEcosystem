@@ -7,9 +7,19 @@ private:
     string name;
     int height;
 
+    // Static variable to keep track of the number of plants
+    static int plantCount;
+
 public:
     // Constructor
-    Plant(string n, int h) : name(n), height(h) {}
+    Plant(string n, int h) : name(n), height(h) {
+        plantCount++; // Increment the count when a new plant is created
+    }
+
+    // Destructor
+    ~Plant() {
+        plantCount--; // Decrement the count when a plant is destroyed
+    }
 
     // Member function to display plant details
     void display() {
@@ -21,17 +31,35 @@ public:
         height += growth;
         cout << name << " has grown by " << growth << " cm." << endl;
     }
+
+    // Static function to get the current plant count
+    static int getPlantCount() {
+        return plantCount;
+    }
 };
+
+// Initialize static variable
+int Plant::plantCount = 0;
 
 // Class representing an Insect
 class Insect {
 private:
     string species;
-    int age; 
+    int age;
+
+    // Static variable to keep track of the number of insects
+    static int insectCount;
 
 public:
     // Constructor
-    Insect(string s, int a) : species(s), age(a) {}
+    Insect(string s, int a) : species(s), age(a) {
+        insectCount++; // Increment the count when a new insect is created
+    }
+
+    // Destructor
+    ~Insect() {
+        insectCount--; // Decrement the count when an insect is destroyed
+    }
 
     // Member function to display insect details
     void display() {
@@ -43,7 +71,15 @@ public:
         age += days;
         cout << species << " has aged by " << days << " days." << endl;
     }
+
+    // Static function to get the current insect count
+    static int getInsectCount() {
+        return insectCount;
+    }
 };
+
+// Initialize static variable
+int Insect::insectCount = 0;
 
 int main() {
     // Dynamically allocating memory for Plant objects
@@ -65,11 +101,19 @@ int main() {
         insects[i]->ageInsect(3);
     }
 
+    // Display the static variables (total number of plants and insects)
+    cout << "Total number of plants: " << Plant::getPlantCount() << endl;
+    cout << "Total number of insects: " << Insect::getInsectCount() << endl;
+
     // Deleting dynamically allocated memory
     for (int i = 0; i < 2; i++) {
         delete garden[i]; 
         delete insects[i]; 
     }
+
+    // Display the counts after deletion
+    cout << "Total number of plants after deletion: " << Plant::getPlantCount() << endl;
+    cout << "Total number of insects after deletion: " << Insect::getInsectCount() << endl;
 
     return 0;
 }
