@@ -34,6 +34,7 @@ public:
 
     // Static function to get the current plant count
     static int getPlantCount() {
+        // Static function only accesses static members
         return plantCount;
     }
 };
@@ -74,6 +75,7 @@ public:
 
     // Static function to get the current insect count
     static int getInsectCount() {
+        // Static function only accesses static members
         return insectCount;
     }
 };
@@ -102,6 +104,7 @@ int main() {
     }
 
     // Display the static variables (total number of plants and insects)
+    // Calling static member functions using class name
     cout << "Total number of plants: " << Plant::getPlantCount() << endl;
     cout << "Total number of insects: " << Insect::getInsectCount() << endl;
 
