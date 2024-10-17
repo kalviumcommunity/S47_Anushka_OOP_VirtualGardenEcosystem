@@ -1,8 +1,21 @@
 #include <iostream>
 using namespace std;
 
-// Class representing a Plant
-class Plant {
+// Abstract base class representing an Organism
+class Organism {
+public:
+    // Pure virtual function to display organism details
+    virtual void display() const = 0;
+
+    // Pure virtual function for growth/aging behavior
+    virtual void growOrAge(int value) = 0;
+
+    // Virtual destructor to ensure proper cleanup of derived classes
+    virtual ~Organism() {}
+};
+
+// Class representing a Plant (inherits from Organism)
+class Plant : public Organism {
 private:
     string name;
     int height;
@@ -21,37 +34,17 @@ public:
         plantCount--; // Decrement the count when a plant is destroyed
     }
 
-    // Getter for plant name
-    string getName() const {
-        return name;
-    }
-
-    // Setter for plant name
-    void setName(string n) {
-        name = n;
-    }
-
-    // Getter for plant height
-    int getHeight() const {
-        return height;
-    }
-
-    // Setter for plant height
-    void setHeight(int h) {
-        if (h >= 0) {
-            height = h;
-        }
-    }
-
-    // Member function to display plant details
-    void display() const {
+    // Implementation of display function (from Organism)
+    void display() const override {
         cout << "Plant Name: " << name << ", Height: " << height << " cm" << endl;
     }
 
-    // Member function to grow the plant
-    void grow(int growth) {
-        setHeight(height + growth);  // Using setter for encapsulation
-        cout << name << " has grown by " << growth << " cm." << endl;
+    // Implementation of growOrAge function (from Organism)
+    void growOrAge(int growth) override {
+        if (growth >= 0) {
+            height += growth;
+            cout << name << " has grown by " << growth << " cm." << endl;
+        }
     }
 
     // Static function to get the current plant count
@@ -63,8 +56,8 @@ public:
 // Initialize static variable
 int Plant::plantCount = 0;
 
-// Class representing an Insect
-class Insect {
+// Class representing an Insect (inherits from Organism)
+class Insect : public Organism {
 private:
     string species;
     int age;
@@ -83,37 +76,17 @@ public:
         insectCount--; // Decrement the count when an insect is destroyed
     }
 
-    // Getter for insect species
-    string getSpecies() const {
-        return species;
-    }
-
-    // Setter for insect species
-    void setSpecies(string s) {
-        species = s;
-    }
-
-    // Getter for insect age
-    int getAge() const {
-        return age;
-    }
-
-    // Setter for insect age
-    void setAge(int a) {
-        if (a >= 0) {
-            age = a;
-        }
-    }
-
-    // Member function to display insect details
-    void display() const {
+    // Implementation of display function (from Organism)
+    void display() const override {
         cout << "Insect Species: " << species << ", Age: " << age << " days" << endl;
     }
 
-    // Member function to age the insect
-    void ageInsect(int days) {
-        setAge(age + days);  // Using setter for encapsulation
-        cout << species << " has aged by " << days << " days." << endl;
+    // Implementation of growOrAge function (from Organism)
+    void growOrAge(int days) override {
+        if (days >= 0) {
+            age += days;
+            cout << species << " has aged by " << days << " days." << endl;
+        }
     }
 
     // Static function to get the current insect count
@@ -127,22 +100,22 @@ int Insect::insectCount = 0;
 
 int main() {
     // Dynamically allocating memory for Plant objects
-    Plant* garden[2];
+    Organism* garden[2];
     garden[0] = new Plant("Rose", 30);
     garden[1] = new Plant("Tulip", 15);
 
     // Dynamically allocating memory for Insect objects
-    Insect* insects[2];
+    Organism* insects[2];
     insects[0] = new Insect("Bee", 10);
     insects[1] = new Insect("Butterfly", 5);
 
-    // Using member functions
+    // Using member functions from the abstract Organism class
     for (int i = 0; i < 2; i++) {
         garden[i]->display();
-        garden[i]->grow(10);
+        garden[i]->growOrAge(10);  // Plants grow by 10 cm
 
         insects[i]->display();
-        insects[i]->ageInsect(3);
+        insects[i]->growOrAge(3);  // Insects age by 3 days
     }
 
     // Display the static variables (total number of plants and insects)
@@ -151,8 +124,8 @@ int main() {
 
     // Deleting dynamically allocated memory
     for (int i = 0; i < 2; i++) {
-        delete garden[i]; 
-        delete insects[i]; 
+        delete garden[i];
+        delete insects[i];
     }
 
     // Display the counts after deletion
