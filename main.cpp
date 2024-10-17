@@ -21,20 +21,41 @@ public:
         plantCount--; // Decrement the count when a plant is destroyed
     }
 
+    // Getter for plant name
+    string getName() const {
+        return name;
+    }
+
+    // Setter for plant name
+    void setName(string n) {
+        name = n;
+    }
+
+    // Getter for plant height
+    int getHeight() const {
+        return height;
+    }
+
+    // Setter for plant height
+    void setHeight(int h) {
+        if (h >= 0) {
+            height = h;
+        }
+    }
+
     // Member function to display plant details
-    void display() {
+    void display() const {
         cout << "Plant Name: " << name << ", Height: " << height << " cm" << endl;
     }
 
     // Member function to grow the plant
     void grow(int growth) {
-        height += growth;
+        setHeight(height + growth);  // Using setter for encapsulation
         cout << name << " has grown by " << growth << " cm." << endl;
     }
 
     // Static function to get the current plant count
     static int getPlantCount() {
-        // Static function only accesses static members
         return plantCount;
     }
 };
@@ -62,20 +83,41 @@ public:
         insectCount--; // Decrement the count when an insect is destroyed
     }
 
+    // Getter for insect species
+    string getSpecies() const {
+        return species;
+    }
+
+    // Setter for insect species
+    void setSpecies(string s) {
+        species = s;
+    }
+
+    // Getter for insect age
+    int getAge() const {
+        return age;
+    }
+
+    // Setter for insect age
+    void setAge(int a) {
+        if (a >= 0) {
+            age = a;
+        }
+    }
+
     // Member function to display insect details
-    void display() {
+    void display() const {
         cout << "Insect Species: " << species << ", Age: " << age << " days" << endl;
     }
 
     // Member function to age the insect
     void ageInsect(int days) {
-        age += days;
+        setAge(age + days);  // Using setter for encapsulation
         cout << species << " has aged by " << days << " days." << endl;
     }
 
     // Static function to get the current insect count
     static int getInsectCount() {
-        // Static function only accesses static members
         return insectCount;
     }
 };
@@ -104,7 +146,6 @@ int main() {
     }
 
     // Display the static variables (total number of plants and insects)
-    // Calling static member functions using class name
     cout << "Total number of plants: " << Plant::getPlantCount() << endl;
     cout << "Total number of insects: " << Insect::getInsectCount() << endl;
 
