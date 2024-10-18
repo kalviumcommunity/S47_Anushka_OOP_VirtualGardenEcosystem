@@ -24,14 +24,22 @@ private:
     static int plantCount;
 
 public:
-    // Constructor
+    // Default constructor
+    Plant() : name("Unnamed"), height(0) {
+        plantCount++;
+        cout << "Default constructor of Plant called" << endl;
+    }
+
+    // Parameterized constructor
     Plant(string n, int h) : name(n), height(h) {
-        plantCount++; // Increment the count when a new plant is created
+        plantCount++;
+        cout << "Parameterized constructor of Plant called" << endl;
     }
 
     // Destructor
     ~Plant() {
-        plantCount--; // Decrement the count when a plant is destroyed
+        plantCount--;
+        cout << "Destructor of Plant called" << endl;
     }
 
     // Implementation of display function (from Organism)
@@ -66,14 +74,22 @@ private:
     static int insectCount;
 
 public:
-    // Constructor
+    // Default constructor
+    Insect() : species("Unknown"), age(0) {
+        insectCount++;
+        cout << "Default constructor of Insect called" << endl;
+    }
+
+    // Parameterized constructor
     Insect(string s, int a) : species(s), age(a) {
-        insectCount++; // Increment the count when a new insect is created
+        insectCount++;
+        cout << "Parameterized constructor of Insect called" << endl;
     }
 
     // Destructor
     ~Insect() {
-        insectCount--; // Decrement the count when an insect is destroyed
+        insectCount--;
+        cout << "Destructor of Insect called" << endl;
     }
 
     // Implementation of display function (from Organism)
@@ -101,13 +117,13 @@ int Insect::insectCount = 0;
 int main() {
     // Dynamically allocating memory for Plant objects
     Organism* garden[2];
-    garden[0] = new Plant("Rose", 30);
-    garden[1] = new Plant("Tulip", 15);
+    garden[0] = new Plant("Rose", 30);   // Parameterized constructor
+    garden[1] = new Plant();             // Default constructor
 
     // Dynamically allocating memory for Insect objects
     Organism* insects[2];
-    insects[0] = new Insect("Bee", 10);
-    insects[1] = new Insect("Butterfly", 5);
+    insects[0] = new Insect("Bee", 10);  // Parameterized constructor
+    insects[1] = new Insect();           // Default constructor
 
     // Using member functions from the abstract Organism class
     for (int i = 0; i < 2; i++) {
