@@ -7,11 +7,11 @@ public:
     // Pure virtual function to display organism details
     virtual void display() const = 0;
 
-    // Pure virtual function for growth/aging behavior
-    virtual void growOrAge(int value) = 0;
-
     // Virtual destructor to ensure proper cleanup of derived classes
     virtual ~Organism() {}
+
+    // Grow or Age behavior with overloading to demonstrate polymorphism
+    virtual void growOrAge(int value) = 0;
 };
 
 // Class representing a Plant (inherits from Organism) - Single Inheritance
@@ -47,12 +47,18 @@ public:
         cout << "Plant Name: " << name << ", Height: " << height << " cm" << endl;
     }
 
-    // Implementation of growOrAge function (from Organism)
+    // Overloaded growOrAge function
     void growOrAge(int growth) override {
         if (growth >= 0) {
             height += growth;
             cout << name << " has grown by " << growth << " cm." << endl;
         }
+    }
+
+    // Additional overloaded growOrAge function
+    void growOrAge(float growthFactor) {
+        height += static_cast<int>(height * growthFactor);
+        cout << name << " has grown by a factor of " << growthFactor << endl;
     }
 
     // Static function to get the current plant count
@@ -114,12 +120,18 @@ public:
         cout << "Insect Species: " << species << ", Age: " << age << " days" << endl;
     }
 
-    // Implementation of growOrAge function (from Organism)
+    // Overloaded growOrAge function for integer days
     void growOrAge(int days) override {
         if (days >= 0) {
             age += days;
             cout << species << " has aged by " << days << " days." << endl;
         }
+    }
+
+    // Additional overloaded growOrAge function for aging based on weeks
+    void growOrAge(float weeks) {
+        age += static_cast<int>(weeks * 7);
+        cout << species << " has aged by " << weeks << " weeks." << endl;
     }
 
     // Static function to get the current insect count
@@ -169,6 +181,10 @@ int main() {
         insects[i]->display();
         insects[i]->growOrAge(3);  // Insects age by 3 days
     }
+
+    // Additional demonstration of overloaded functions
+    dynamic_cast<Plant*>(garden[0])->growOrAge(0.2f); // Grow by 20% factor
+    dynamic_cast<Insect*>(insects[0])->growOrAge(2.0f); // Age by 2 weeks
 
     // Display the static variables (total number of plants and insects)
     cout << "Total number of plants: " << Plant::getPlantCount() << endl;
