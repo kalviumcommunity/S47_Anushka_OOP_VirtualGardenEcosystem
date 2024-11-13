@@ -4,13 +4,16 @@ using namespace std;
 // Abstract base class representing an Organism
 class Organism {
 public:
-    // Pure virtual function to display organism details
+    // Pure virtual function to display organism details, making Organism an abstract class
     virtual void display() const = 0;
+
+    // Pure virtual function to define reproduce behavior, making Organism an abstract class
+    virtual void reproduce() const = 0;
 
     // Virtual destructor to ensure proper cleanup of derived classes
     virtual ~Organism() {}
 
-    // Grow or Age behavior with overloading to demonstrate polymorphism
+    // Virtual function to define grow or age behavior with an integer parameter
     virtual void growOrAge(int value) = 0;
 };
 
@@ -42,17 +45,22 @@ public:
         cout << "Destructor of Plant called" << endl;
     }
 
-    // Implementation of display function (from Organism)
+    // Override of the abstract display function from Organism class
     void display() const override {
         cout << "Plant Name: " << name << ", Height: " << height << " cm" << endl;
     }
 
-    // Overloaded growOrAge function
+    // Override of the virtual growOrAge function with an integer parameter
     void growOrAge(int growth) override {
         if (growth >= 0) {
             height += growth;
             cout << name << " has grown by " << growth << " cm." << endl;
         }
+    }
+
+    // New override of the reproduce function to simulate plant reproduction
+    void reproduce() const override {
+        cout << name << " has produced seeds." << endl;
     }
 
     // Additional overloaded growOrAge function
@@ -81,9 +89,14 @@ public:
         cout << "Tree created with age: " << age << " years." << endl;
     }
 
-    // Display additional details for a Tree
+    // Override of the display function to provide Tree-specific details
     void display() const override {
         cout << "Tree Name: " << name << ", Height: " << height << " cm, Age: " << age << " years" << endl;
+    }
+
+    // Override the reproduce function for trees
+    void reproduce() const override {
+        cout << name << " is producing acorns." << endl;
     }
 };
 
@@ -115,17 +128,22 @@ public:
         cout << "Destructor of Insect called" << endl;
     }
 
-    // Implementation of display function (from Organism)
+    // Override of the abstract display function from Organism class
     void display() const override {
         cout << "Insect Species: " << species << ", Age: " << age << " days" << endl;
     }
 
-    // Overloaded growOrAge function for integer days
+    // Override of the growOrAge function for integer days
     void growOrAge(int days) override {
         if (days >= 0) {
             age += days;
             cout << species << " has aged by " << days << " days." << endl;
         }
+    }
+
+    // New override of the reproduce function to simulate insect reproduction
+    void reproduce() const override {
+        cout << species << " has laid eggs." << endl;
     }
 
     // Additional overloaded growOrAge function for aging based on weeks
@@ -154,9 +172,14 @@ public:
         cout << "Butterfly created with color: " << color << endl;
     }
 
-    // Display additional details for a Butterfly
+    // Override of the display function to provide Butterfly-specific details
     void display() const override {
         cout << "Butterfly Species: " << species << ", Age: " << age << " days, Color: " << color << endl;
+    }
+
+    // Override the reproduce function for butterflies
+    void reproduce() const override {
+        cout << species << " butterfly is laying eggs." << endl;
     }
 };
 
@@ -177,9 +200,11 @@ int main() {
     for (int i = 0; i < 3; i++) {
         garden[i]->display();
         garden[i]->growOrAge(10);  // Plants grow by 10 cm
+        garden[i]->reproduce();    // Call reproduce method
 
         insects[i]->display();
         insects[i]->growOrAge(3);  // Insects age by 3 days
+        insects[i]->reproduce();   // Call reproduce method
     }
 
     // Additional demonstration of overloaded functions
