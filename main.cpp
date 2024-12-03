@@ -4,53 +4,68 @@ using namespace std;
 // Abstract base class representing an Organism
 class Organism {
 public:
-    // Pure virtual function to display organism details, making Organism an abstract class
-    virtual void display() const = 0;
-
-    // Pure virtual function to define reproduce behavior, making Organism an abstract class
-    virtual void reproduce() const = 0;
-
-    // Virtual destructor to ensure proper cleanup of derived classes
+    virtual void display() const = 0;   // Display details
+    virtual void reproduce() const = 0; // Reproduce behavior
     virtual ~Organism() {}
-
-    // Virtual function to define grow or age behavior with an integer parameter
-    virtual void growOrAge(int value) = 0;
+    virtual void growOrAge(int value) = 0; // Grow or age
 };
 
-// Class representing a Plant (inherits from Organism) - Single Inheritance
+// Utility class for displaying Plant information
+class PlantDisplay {
+public:
+    static void displayPlant(const string& name, int height) {
+        cout << "Plant Name: " << name << ", Height: " << height << " cm" << endl;
+    }
+};
+
+// Utility class for tracking Plant count
+class PlantManager {
+private:
+    static int plantCount;
+
+public:
+    static void incrementCount() {
+        plantCount++;
+    }
+
+    static void decrementCount() {
+        plantCount--;
+    }
+
+    static int getPlantCount() {
+        return plantCount;
+    }
+};
+
+// Initialize static variable
+int PlantManager::plantCount = 0;
+
+// Class representing a Plant
 class Plant : public Organism {
 protected:
     string name;
     int height;
 
-    // Static variable to keep track of the number of plants
-    static int plantCount;
-
 public:
-    // Default constructor
     Plant() : name("Unnamed"), height(0) {
-        plantCount++;
+        PlantManager::incrementCount();
         cout << "Default constructor of Plant called" << endl;
     }
 
-    // Parameterized constructor
     Plant(string n, int h) : name(n), height(h) {
-        plantCount++;
+        PlantManager::incrementCount();
         cout << "Parameterized constructor of Plant called" << endl;
     }
 
-    // Destructor
     ~Plant() {
-        plantCount--;
+        PlantManager::decrementCount();
         cout << "Destructor of Plant called" << endl;
     }
 
-    // Override of the abstract display function from Organism class
     void display() const override {
-        cout << "Plant Name: " << name << ", Height: " << height << " cm" << endl;
+        PlantDisplay::displayPlant(name, height);
     }
 
-    // Override of the virtual growOrAge function with an integer parameter
     void growOrAge(int growth) override {
         if (growth >= 0) {
             height += growth;
@@ -58,82 +73,67 @@ public:
         }
     }
 
-    // New override of the reproduce function to simulate plant reproduction
     void reproduce() const override {
         cout << name << " has produced seeds." << endl;
     }
+};
 
-    // Additional overloaded growOrAge function
-    void growOrAge(float growthFactor) {
-        height += static_cast<int>(height * growthFactor);
-        cout << name << " has grown by a factor of " << growthFactor << endl;
+// Utility class for displaying Insect information
+class InsectDisplay {
+public:
+    static void displayInsect(const string& species, int age) {
+        cout << "Insect Species: " << species << ", Age: " << age << " days" << endl;
+    }
+};
+
+// Utility class for tracking Insect count
+class InsectManager {
+private:
+    static int insectCount;
+
+public:
+    static void incrementCount() {
+        insectCount++;
     }
 
-    // Static function to get the current plant count
-    static int getPlantCount() {
-        return plantCount;
+    static void decrementCount() {
+        insectCount--;
+    }
+
+    static int getInsectCount() {
+        return insectCount;
     }
 };
 
 // Initialize static variable
-int Plant::plantCount = 0;
+int InsectManager::insectCount = 0;
 
-// Class representing a Tree (inherits from Plant) - Hierarchical Inheritance
-class Tree : public Plant {
-private:
-    int age;
-
-public:
-    // Constructor with additional age parameter
-    Tree(string n, int h, int a) : Plant(n, h), age(a) {
-        cout << "Tree created with age: " << age << " years." << endl;
-    }
-
-    // Override of the display function to provide Tree-specific details
-    void display() const override {
-        cout << "Tree Name: " << name << ", Height: " << height << " cm, Age: " << age << " years" << endl;
-    }
-
-    // Override the reproduce function for trees
-    void reproduce() const override {
-        cout << name << " is producing acorns." << endl;
-    }
-};
-
-// Class representing an Insect (inherits from Organism) - Single Inheritance
+// Class representing an Insect
 class Insect : public Organism {
 protected:
     string species;
     int age;
 
-    // Static variable to keep track of the number of insects
-    static int insectCount;
-
 public:
-    // Default constructor
     Insect() : species("Unknown"), age(0) {
-        insectCount++;
+        InsectManager::incrementCount();
         cout << "Default constructor of Insect called" << endl;
     }
 
-    // Parameterized constructor
     Insect(string s, int a) : species(s), age(a) {
-        insectCount++;
+        InsectManager::incrementCount();
         cout << "Parameterized constructor of Insect called" << endl;
     }
 
-    // Destructor
     ~Insect() {
-        insectCount--;
+        InsectManager::decrementCount();
         cout << "Destructor of Insect called" << endl;
     }
 
-    // Override of the abstract display function from Organism class
     void display() const override {
-        cout << "Insect Species: " << species << ", Age: " << age << " days" << endl;
+        InsectDisplay::displayInsect(species, age);
     }
 
-    // Override of the growOrAge function for integer days
     void growOrAge(int days) override {
         if (days >= 0) {
             age += days;
@@ -141,89 +141,73 @@ public:
         }
     }
 
-    // New override of the reproduce function to simulate insect reproduction
     void reproduce() const override {
         cout << species << " has laid eggs." << endl;
     }
+};
 
-    // Additional overloaded growOrAge function for aging based on weeks
-    void growOrAge(float weeks) {
-        age += static_cast<int>(weeks * 7);
-        cout << species << " has aged by " << weeks << " weeks." << endl;
+// Class representing a Tree
+class Tree : public Plant {
+private:
+    int age;
+
+public:
+    Tree(string n, int h, int a) : Plant(n, h), age(a) {
+        cout << "Tree created with age: " << age << " years." << endl;
     }
 
-    // Static function to get the current insect count
-    static int getInsectCount() {
-        return insectCount;
+    void display() const override {
+        cout << "Tree Name: " << name << ", Height: " << height << " cm, Age: " << age << " years" << endl;
+    }
+
+    void reproduce() const override {
+        cout << name << " is producing acorns." << endl;
     }
 };
 
-// Initialize static variable
-int Insect::insectCount = 0;
-
-// Class representing a Butterfly (inherits from Insect) - Hierarchical Inheritance
+// Class representing a Butterfly
 class Butterfly : public Insect {
 private:
     string color;
 
 public:
-    // Constructor with additional color parameter
     Butterfly(string s, int a, string c) : Insect(s, a), color(c) {
         cout << "Butterfly created with color: " << color << endl;
     }
 
-    // Override of the display function to provide Butterfly-specific details
     void display() const override {
         cout << "Butterfly Species: " << species << ", Age: " << age << " days, Color: " << color << endl;
     }
 
-    // Override the reproduce function for butterflies
     void reproduce() const override {
         cout << species << " butterfly is laying eggs." << endl;
     }
 };
 
 int main() {
-    // Dynamically allocating memory for Plant and Tree objects
-    Organism* garden[3];
-    garden[0] = new Plant("Rose", 30);       // Parameterized constructor
-    garden[1] = new Plant();                 // Default constructor
-    garden[2] = new Tree("Oak", 500, 80);    // Tree constructor with hierarchical inheritance
+    Organism* garden[2];
+    garden[0] = new Plant("Rose", 30);
+    garden[1] = new Tree("Oak", 500, 80);
 
-    // Dynamically allocating memory for Insect and Butterfly objects
-    Organism* insects[3];
-    insects[0] = new Insect("Bee", 10);      // Parameterized constructor
-    insects[1] = new Insect();               // Default constructor
-    insects[2] = new Butterfly("Monarch", 5, "Orange");  // Butterfly constructor with hierarchical inheritance
+    Organism* insects[2];
+    insects[0] = new Insect("Bee", 10);
+    insects[1] = new Butterfly("Monarch", 5, "Orange");
 
-    // Using member functions from the abstract Organism class
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 2; i++) {
         garden[i]->display();
-        garden[i]->growOrAge(10);  // Plants grow by 10 cm
-        garden[i]->reproduce();    // Call reproduce method
-
         insects[i]->display();
-        insects[i]->growOrAge(3);  // Insects age by 3 days
-        insects[i]->reproduce();   // Call reproduce method
     }
 
-    // Additional demonstration of overloaded functions
-    dynamic_cast<Plant*>(garden[0])->growOrAge(0.2f); // Grow by 20% factor
-    dynamic_cast<Insect*>(insects[0])->growOrAge(2.0f); // Age by 2 weeks
+    cout << "Total number of plants: " << PlantManager::getPlantCount() << endl;
+    cout << "Total number of insects: " << InsectManager::getInsectCount() << endl;
 
-    // Display the static variables (total number of plants and insects)
-    cout << "Total number of plants: " << Plant::getPlantCount() << endl;
-    cout << "Total number of insects: " << Insect::getInsectCount() << endl;
-
-    // Deleting dynamically allocated memory
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 2; i++) {
         delete garden[i];
         delete insects[i];
     }
 
-    // Display the counts after deletion
-    cout << "Total number of plants after deletion: " << Plant::getPlantCount() << endl;
-    cout << "Total number of insects after deletion: " << Insect::getInsectCount() << endl;
+    cout << "Total number of plants after deletion: " << PlantManager::getPlantCount() << endl;
+    cout << "Total number of insects after deletion: " << InsectManager::getInsectCount() << endl;
 
     return 0;
 }
