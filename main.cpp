@@ -1,213 +1,116 @@
 #include <iostream>
+#include <memory>
 using namespace std;
 
-// Abstract base class representing an Organism
-class Organism {
+// Abstract class for display behavior
+class DisplayBehavior {
 public:
-    virtual void display() const = 0;   // Display details
-    virtual void reproduce() const = 0; // Reproduce behavior
-    virtual ~Organism() {}
-    virtual void growOrAge(int value) = 0; // Grow or age
+    virtual void display(const string& name, int value, const string& extraInfo = "") const = 0;
+    virtual ~DisplayBehavior() {}
 };
 
-// Utility class for displaying Plant information
-class PlantDisplay {
+// Concrete display behavior for plants
+class PlantDisplay : public DisplayBehavior {
 public:
-    static void displayPlant(const string& name, int height) {
+    void display(const string& name, int height, const string& extraInfo = "") const override {
         cout << "Plant Name: " << name << ", Height: " << height << " cm" << endl;
     }
 };
 
-// Utility class for tracking Plant count
-class PlantManager {
-private:
-    static int plantCount;
-
+// Concrete display behavior for insects
+class InsectDisplay : public DisplayBehavior {
 public:
-    static void incrementCount() {
-        plantCount++;
-    }
-
-    static void decrementCount() {
-        plantCount--;
-    }
-
-    static int getPlantCount() {
-        return plantCount;
+    void display(const string& species, int age, const string& extraInfo = "") const override {
+        cout << "Insect Species: " << species << ", Age: " << age << " days" << endl;
+        if (!extraInfo.empty()) {
+            cout << "Additional Info: " << extraInfo << endl;
+        }
     }
 };
 
-// Initialize static variable
-int PlantManager::plantCount = 0;
-
-// Class representing a Plant
-class Plant : public Organism {
+// Abstract base class for Organisms
+class Organism {
 protected:
     string name;
-    int height;
+    int primaryValue; // Height for plants, Age for insects
+    shared_ptr<DisplayBehavior> displayBehavior; // Strategy for display behavior
 
 public:
-    Plant() : name("Unnamed"), height(0) {
-        PlantManager::incrementCount();
-        cout << "Default constructor of Plant called" << endl;
-    }
+    Organism(const string& n, int value, shared_ptr<DisplayBehavior> db)
+        : name(n), primaryValue(value), displayBehavior(db) {}
 
-    Plant(string n, int h) : name(n), height(h) {
-        PlantManager::incrementCount();
-        cout << "Parameterized constructor of Plant called" << endl;
-    }
+    virtual ~Organism() {}
 
-    ~Plant() {
-        PlantManager::decrementCount();
-        cout << "Destructor of Plant called" << endl;
-    }
+    virtual void growOrAge(int value) = 0;
+    virtual void reproduce() const = 0;
 
-    void display() const override {
-        PlantDisplay::displayPlant(name, height);
+    void display() const {
+        displayBehavior->display(name, primaryValue);
     }
+};
+
+// Class for plants
+class Plant : public Organism {
+public:
+    Plant(const string& n, int height)
+        : Organism(n, height, make_shared<PlantDisplay>()) {}
 
     void growOrAge(int growth) override {
-        if (growth >= 0) {
-            height += growth;
-            cout << name << " has grown by " << growth << " cm." << endl;
+        if (growth > 0) {
+            primaryValue += growth;
+            cout << name << " grew by " << growth << " cm." << endl;
         }
     }
 
     void reproduce() const override {
-        cout << name << " has produced seeds." << endl;
+        cout << name << " produced seeds." << endl;
     }
 };
 
-// Utility class for displaying Insect information
-class InsectDisplay {
-public:
-    static void displayInsect(const string& species, int age) {
-        cout << "Insect Species: " << species << ", Age: " << age << " days" << endl;
-    }
-};
-
-// Utility class for tracking Insect count
-class InsectManager {
-private:
-    static int insectCount;
-
-public:
-    static void incrementCount() {
-        insectCount++;
-    }
-
-    static void decrementCount() {
-        insectCount--;
-    }
-
-    static int getInsectCount() {
-        return insectCount;
-    }
-};
-
-// Initialize static variable
-int InsectManager::insectCount = 0;
-
-// Class representing an Insect
+// Class for insects
 class Insect : public Organism {
-protected:
-    string species;
-    int age;
+    string extraInfo;
 
 public:
-    Insect() : species("Unknown"), age(0) {
-        InsectManager::incrementCount();
-        cout << "Default constructor of Insect called" << endl;
-    }
-
-    Insect(string s, int a) : species(s), age(a) {
-        InsectManager::incrementCount();
-        cout << "Parameterized constructor of Insect called" << endl;
-    }
-
-    ~Insect() {
-        InsectManager::decrementCount();
-        cout << "Destructor of Insect called" << endl;
-    }
-
-    void display() const override {
-        InsectDisplay::displayInsect(species, age);
-    }
+    Insect(const string& s, int age, const string& info = "")
+        : Organism(s, age, make_shared<InsectDisplay>()), extraInfo(info) {}
 
     void growOrAge(int days) override {
-        if (days >= 0) {
-            age += days;
-            cout << species << " has aged by " << days << " days." << endl;
+        if (days > 0) {
+            primaryValue += days;
+            cout << name << " aged by " << days << " days." << endl;
         }
     }
 
-    void reproduce() const override {
-        cout << species << " has laid eggs." << endl;
-    }
-};
-
-// Class representing a Tree
-class Tree : public Plant {
-private:
-    int age;
-
-public:
-    Tree(string n, int h, int a) : Plant(n, h), age(a) {
-        cout << "Tree created with age: " << age << " years." << endl;
-    }
-
     void display() const override {
-        cout << "Tree Name: " << name << ", Height: " << height << " cm, Age: " << age << " years" << endl;
+        displayBehavior->display(name, primaryValue, extraInfo);
     }
 
     void reproduce() const override {
-        cout << name << " is producing acorns." << endl;
-    }
-};
-
-// Class representing a Butterfly
-class Butterfly : public Insect {
-private:
-    string color;
-
-public:
-    Butterfly(string s, int a, string c) : Insect(s, a), color(c) {
-        cout << "Butterfly created with color: " << color << endl;
-    }
-
-    void display() const override {
-        cout << "Butterfly Species: " << species << ", Age: " << age << " days, Color: " << color << endl;
-    }
-
-    void reproduce() const override {
-        cout << species << " butterfly is laying eggs." << endl;
+        cout << name << " laid eggs." << endl;
     }
 };
 
 int main() {
-    Organism* garden[2];
-    garden[0] = new Plant("Rose", 30);
-    garden[1] = new Tree("Oak", 500, 80);
+    // Create plants and insects
+    Plant rose("Rose", 30);
+    Plant oak("Oak", 500);
+    Insect bee("Bee", 10);
+    Insect butterfly("Butterfly", 5, "Orange wings");
 
-    Organism* insects[2];
-    insects[0] = new Insect("Bee", 10);
-    insects[1] = new Butterfly("Monarch", 5, "Orange");
+    // Display their information
+    rose.display();
+    oak.display();
+    bee.display();
+    butterfly.display();
 
-    for (int i = 0; i < 2; i++) {
-        garden[i]->display();
-        insects[i]->display();
-    }
+    // Modify and display their growth/aging
+    rose.growOrAge(5);
+    bee.growOrAge(3);
 
-    cout << "Total number of plants: " << PlantManager::getPlantCount() << endl;
-    cout << "Total number of insects: " << InsectManager::getInsectCount() << endl;
-
-    for (int i = 0; i < 2; i++) {
-        delete garden[i];
-        delete insects[i];
-    }
-
-    cout << "Total number of plants after deletion: " << PlantManager::getPlantCount() << endl;
-    cout << "Total number of insects after deletion: " << InsectManager::getInsectCount() << endl;
+    cout << endl << "After growth/aging:" << endl;
+    rose.display();
+    bee.display();
 
     return 0;
 }
