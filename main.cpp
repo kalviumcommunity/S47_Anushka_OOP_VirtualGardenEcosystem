@@ -33,19 +33,20 @@ class Organism {
 protected:
     string name;
     int primaryValue; // Height for plants, Age for insects
+    string extraInfo; // Unified field for additional information
     shared_ptr<DisplayBehavior> displayBehavior; // Strategy for display behavior
 
 public:
-    Organism(const string& n, int value, shared_ptr<DisplayBehavior> db)
-        : name(n), primaryValue(value), displayBehavior(db) {}
+    Organism(const string& n, int value, const string& info, shared_ptr<DisplayBehavior> db)
+        : name(n), primaryValue(value), extraInfo(info), displayBehavior(db) {}
 
     virtual ~Organism() {}
 
     virtual void growOrAge(int value) = 0;
     virtual void reproduce() const = 0;
 
-    void display() const {
-        displayBehavior->display(name, primaryValue);
+    virtual void display() const {
+        displayBehavior->display(name, primaryValue, extraInfo);
     }
 };
 
@@ -53,7 +54,7 @@ public:
 class Plant : public Organism {
 public:
     Plant(const string& n, int height)
-        : Organism(n, height, make_shared<PlantDisplay>()) {}
+        : Organism(n, height, "", make_shared<PlantDisplay>()) {}
 
     void growOrAge(int growth) override {
         if (growth > 0) {
@@ -69,21 +70,15 @@ public:
 
 // Class for insects
 class Insect : public Organism {
-    string extraInfo;
-
 public:
     Insect(const string& s, int age, const string& info = "")
-        : Organism(s, age, make_shared<InsectDisplay>()), extraInfo(info) {}
+        : Organism(s, age, info, make_shared<InsectDisplay>()) {}
 
     void growOrAge(int days) override {
         if (days > 0) {
             primaryValue += days;
             cout << name << " aged by " << days << " days." << endl;
         }
-    }
-
-    void display() const override {
-        displayBehavior->display(name, primaryValue, extraInfo);
     }
 
     void reproduce() const override {
